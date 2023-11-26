@@ -1,0 +1,103 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #sketch {
+            position: absolute;
+            width: 100%;
+            opacity: 0.3;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <img src="https://www.proplan.ru/sites/default/files/2021-05/%D0%BD%D0%B5%D0%BC%D0%B5%D1%86%D0%BA%D0%B0%D1%8F%20%D0%BE%D0%B2%D1%87%D0%B0%D1%80%D0%BA%D0%B0%201920%D1%85767_0.jpg"
+    id="sketch"
+    />
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerHeight;
+        canvas.height = window.innerHeight;
+
+        const config = {
+            lineSize: 5,
+            color: "black",
+        };
+
+        let posX = [];
+        let posY = [];
+        let draw = false;
+        canvas.addEventListener("mousedown", () => {
+            draw = true;
+            ctx.beginPath();
+        })
+
+        canvas.addEventListener("mouseup", () => {
+            draw = false;
+        })
+
+        canvas.onmousemove = (e) => recordMousePod(e);
+
+        function recordMousePod(e) {
+            if (draw) {
+                posX.push(e.clientX);
+                posY.push(e.clientY);
+                drawLine(e.clientX, e.clientY);
+            }
+        }
+
+        function drawLine(x, y) {
+         ctx.lineWidth = config.lineSize;
+         ctx.strokeStyle = config.color;
+         ctx.lineTo(x,y);
+         ctx.stroke()
+        }
+
+        function clearCanvas()
+        {
+            canvas.width = canvas.width;
+            canvas.height = canvas.height;
+        }
+function reDraw()
+{
+    posX.splice(-5);
+    posY.splice(-5);
+    for (let i=0; i<posX.length; i++)
+    {
+        drawLine(posX[i], posY[i])
+    }
+}
+function saveImage()
+{
+    let image = canvas
+    .toDataURL("image/png")
+    .replace("image/png", "image/octet-stream");
+    window.location.href = image;
+}
+
+        document.addEventListener("keydown", (e) =>
+        {
+            if (e.code == "KeyC")
+            {
+                clearCanvas();
+            }
+            else if (e.code == "KeyZ")
+            {
+                clearCanvas();
+                reDraw();
+            }
+            else if (e.code == "KeyS")
+            {
+                saveImage();
+            }
+        })
+    </script>
+</body>
+</html>
